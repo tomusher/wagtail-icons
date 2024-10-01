@@ -1,0 +1,8 @@
+{% load wagtailadmin_tags i18n static %}
+
+<link rel="stylesheet" href="{% static 'wagtail_icons/main.css' %}" />
+
+<div class="nice-padding">
+    <h2>{% trans "Choose an icon" %}</h2>
+    {% component icon_grid %}
+</div>

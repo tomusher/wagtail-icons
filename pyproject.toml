@@ -1,0 +1,40 @@
+[project]
+name = "wagtail-icons"
+authors = [{name = "Tom Usher", email = "tom@tomusher.com"}]
+version = "0.1.0"
+description = "Select icons from various icon libraries for use in Wagtail"
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "django>=5.1",
+    "requests>=2.32.3",
+    "wagtail>=6.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wagtail_icons"]
+
+[tool.ruff]
+select = [
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "DJ",     # flake8-django
+    "E",      # pycodestyle errors
+    "F",      # pyflakes
+    "I",      # isort
+    "RUF100", # unused noqa
+    "S",      # flake8-bandit
+    "UP",     # pyupgrade
+    "W",      # warning
+]
+fixable = ["C4", "E", "F", "I", "UP"]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.6.8",
+]
