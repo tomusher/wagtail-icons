@@ -1,5 +1,5 @@
 [project]
-name = "wagtail-icons"
+name = "wagtail-icon-library"
 authors = [{name = "Tom Usher", email = "tom@tomusher.com"}]
 version = "0.1.0"
 description = "Select icons from various icon libraries for use in Wagtail"
