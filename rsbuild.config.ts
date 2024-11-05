@@ -9,12 +9,19 @@ export default defineConfig({
     },
     output: {
         distPath: {
-            root: "src/wagtail_icons/static/",
+            root: "src/wagtail_icons/static/wagtailicons/",
+            js: "js",
+            css: "css",
         },
         filenameHash: false,
     },
     dev: {
         writeToDisk: true,
+    },
+    performance: {
+        chunkSplit: {
+            strategy: "all-in-one",
+        },
     },
     plugins: [pluginReact()],
 });

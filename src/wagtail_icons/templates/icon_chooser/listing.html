@@ -1,8 +1,27 @@
 {% load wagtailadmin_tags i18n static %}
 
-<link rel="stylesheet" href="{% static 'wagtail_icons/main.css' %}" />
+<link rel="stylesheet" href="{% static 'wagtailicons/css/main.css' %}" />
+<script src="{% static 'wagtailicons/js/main.js' %}"></script>
 
-<div class="nice-padding">
-    <h2>{% trans "Choose an icon" %}</h2>
-    {% component icon_grid %}
+<div class="p-6">
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">{% trans "Choose an icon" %}</h2>
+
+    <form id="icon-search-form" class="mb-6">
+        <input type="text" name="query" 
+               placeholder="{% trans 'Search icons...' %}" 
+               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+               hx-trigger="keyup changed delay:500ms"
+               hx-target="#search-results"
+               hx-get="{% url 'icon-chooser:query' %}"
+               hx-include="#icon-search-form"
+    </form>
+
+    <div class="space-y-6">
+        <div class="bg-gray-100 p-4 rounded-md" id="container">
+            <h3 class="text-xl font-semibold mb-3 text-gray-700">{{ provider }}</h3>
+            <div class="min-h-[100px] relative" id="search-results">
+                <p class="text-gray-500 italic">Loading icons...</p>
+            </div>
+        </div>
+    </div>
 </div>

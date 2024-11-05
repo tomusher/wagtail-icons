@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      htmx.org:
+        specifier: 2.0.2
+        version: 2.0.2
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -779,6 +782,9 @@ packages:
 
   html-entities@2.5.2:
     resolution: {integrity: sha512-K//PSRMQk4FZ78Kyau+mZurHn3FH0Vwr+H36eE0rPbeYkRRi9YxceYPhuN60UwWorxyKHhqoAJl2OFKa4BVtaA==}
+
+  htmx.org@2.0.2:
+    resolution: {integrity: sha512-eUPIpQaWKKstX393XNCRCMJTrqPzikh36Y9RceqsUZLTtlFjFaVDgwZLUsrFk8J2uzZxkkfiy0TE359j2eN6hA==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -2272,6 +2278,8 @@ snapshots:
       function-bind: 1.1.2
 
   html-entities@2.5.2: {}
+
+  htmx.org@2.0.2: {}
 
   ignore@5.3.2: {}
 

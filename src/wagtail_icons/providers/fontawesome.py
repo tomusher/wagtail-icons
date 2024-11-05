@@ -11,21 +11,42 @@ class FontAwesomeIconProviderSettings(IconProviderSettings):
     api_url: str = "https://api.fontawesome.com/"
 
 
-class FontAwesomeIconProvider(IconProvider):
+class FontAwesomeIconProvider(IconProvider[FontAwesomeIconProviderSettings]):
     name = "FontAwesome"
     alias = "fontawesome"
 
-    settings_type: type[FontAwesomeIconProviderSettings] = (
-        FontAwesomeIconProviderSettings
-    )
+    settings_type = FontAwesomeIconProviderSettings
 
-    def _to_icon(self, icon: dict) -> Icon:
-        return Icon(
-            name=icon["id"],
-            label=icon["label"],
-            svg=icon["svgs"][0]["html"],
-            provider=self.alias,
-        )
+    def _extract_aliases(self, icon: dict) -> str:
+        aliases = icon.get("aliases", {}) or {}
+        return ", ".join(aliases.get("names", []))
+
+    def _to_icons(self, icons: list[dict]) -> list[Icon]:
+        styles = self.get_styles()
+        icon_objs = []
+        for family, style in styles:
+            for icon in icons:
+                matching_svg = next(
+                    (
+                        svg
+                        for svg in icon["svgs"]
+                        if svg["familyStyle"]["family"] == family
+                        and svg["familyStyle"]["style"] == style
+                    ),
+                    None,
+                )
+                if matching_svg:
+                    icon_objs.append(
+                        Icon(
+                            name=icon["id"],
+                            label=icon["label"],
+                            svg=matching_svg["html"],
+                            provider=self.alias,
+                            style=f"{family}-{style}",
+                            aliases=self._extract_aliases(icon),
+                        )
+                    )
+        return icon_objs
 
     def do_graphql_request(self, query: str) -> dict:
         headers = {
@@ -51,44 +72,45 @@ class FontAwesomeIconProvider(IconProvider):
         response.raise_for_status()
         return response.json()["access_token"]
 
-    def get_icons(self) -> list[Icon]:
+    def get_styles(self) -> list[tuple[str, str]]:
         query = """
         query {
-          search(version: "6.0.0", query: "arrow") {
-            id
-            label
-            styles
-            svgs {
-              html
+          release(version: "6.0.0") {
+            familyStyles {
+                family
+                style
             }
           }
         }
         """
 
         data = self.do_graphql_request(query)
-        icons = data["data"]["search"]
+        styles = data["data"]["release"]["familyStyles"]
+        return [(style["family"], style["style"]) for style in styles]
 
-        return [self._to_icon(icon) for icon in icons]
-
-    def get_icon(self, name: str) -> Icon:
-        query = f"""
-        query {{
-          search(version: "6.0.0", query: "{name}") {{
-            id
-            label
-            styles
-            svgs {{
-              html
-            }}
-          }}
-        }}
+    def get_all_icons(self) -> list[Icon]:
+        query = """
+        query {
+          release(version: "6.0.0") {
+            icons {
+                id
+                label
+                aliases {
+                    names
+                }
+                svgs {
+                    html
+                    familyStyle {
+                        family
+                        style
+                    }
+                }
+            }
+          }
+        }
         """
 
         data = self.do_graphql_request(query)
-        icons = data["data"]["search"]
+        icons = data["data"]["release"]["icons"]
 
-        for icon in icons:
-            if icon["id"] == name:
-                return self._to_icon(icon)
-
-        raise ValueError(f"Icon {name} not found")
+        return self._to_icons(icons)

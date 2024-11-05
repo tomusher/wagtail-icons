@@ -1,6 +1,7 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Generic, TypeVar
 
 from django.conf import settings
 from django.utils.module_loading import import_string
@@ -9,12 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 def get_icon_providers():
-    providers = settings.WAGTAIL_ICONS_PROVIDERS
-    for alias, config in providers.items():
+    provider_config = settings.WAGTAIL_ICONS_PROVIDERS
+    providers = {}
+    for alias, config in provider_config.items():
         config = config.copy()
         cls = config.pop("class")
         provider_class = import_string(cls)
-        yield provider_class(**config)
+        providers[alias] = provider_class(**config)
+    return providers
 
 
 @dataclass
@@ -28,10 +31,16 @@ class Icon:
     label: str
     svg: str
     provider: str
+    style: str = ""
+    aliases: str = ""
 
 
-class IconProvider(ABC):
-    settings_type: type[IconProviderSettings] = IconProviderSettings
+SettingsType = TypeVar("SettingsType", bound=IconProviderSettings)
+
+
+class IconProvider(ABC, Generic[SettingsType]):
+    name: str
+    settings_type: type[SettingsType]
 
     def __init__(self, **kwargs):
         try:
@@ -40,27 +49,11 @@ class IconProvider(ABC):
             raise ValueError(f"Invalid settings for {self.__class__.__name__}") from e
 
     @abstractmethod
-    def get_icons(self) -> list[Icon]:
+    def get_all_icons(self) -> list[Icon]:
         """
-        Retrieve a list of icons from the provider.
+        Retrieve all icons from the provider.
 
         Returns:
-            A list of Icon objects.
-        """
-        pass
-
-    @abstractmethod
-    def get_icon(self, name: str) -> Icon:
-        """
-        Retrieve a specific icon by name.
-
-        Args:
-            name: The name of the icon to retrieve.
-
-        Returns:
-            An Icon object.
-
-        Raises:
-            ValueError: If the icon with the given name is not found.
+            A list of all Icon objects available from this provider.
         """
         pass
