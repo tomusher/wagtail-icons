@@ -5,7 +5,7 @@ from wagtail_icons.components.icon import IconComponent
 class IconGridComponent(ColocatedComponent):
     template = """
 {% load wagtailadmin_tags %}
-<div class="grid grid-cols-8 gap-4">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
     {% for icon in icons %}
         {% component icon %}
     {% endfor %}

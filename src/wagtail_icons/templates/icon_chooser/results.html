@@ -1,0 +1,38 @@
+{% load wagtailadmin_tags i18n static %}
+
+<link rel="stylesheet" href="{% static 'wagtailicons/css/main.css' %}" />
+
+{% if results %}
+    {% if is_searching %}
+        {% block search_results_count %}
+            <h2 role="alert">
+                {% with result_count=results.paginator.count %}
+                    {% blocktrans trimmed with counter=result_count|intcomma count counter_val=result_count %}
+                        There is {{ counter }} match
+                    {% plural %}
+                        There are {{ counter }} matches
+                    {% endblocktrans %}
+                {% endwith %}
+            </h2>
+        {% endblock %}
+    {% else %}
+        {% block listing_title %}{% endblock %}
+    {% endif %}
+
+    {% block results_listing %}
+        {% if icon_grid %}
+            {% component icon_grid %}
+        {% endif %}
+    {% endblock %}
+    {% include "wagtailadmin/shared/pagination_nav.html" with items=results linkurl=results_pagination_url %}
+{% else %}
+    {% if is_searching %}
+        {% block no_search_results_message %}
+            <p role="alert">{% blocktrans trimmed %}Sorry, there are no matches for "<em>{{ search_query }}</em>"{% endblocktrans %}</p>
+        {% endblock %}
+    {% else %}
+        {% block no_items_message %}
+            <p>{% trans "There are no results." %}</p>
+        {% endblock %}
+    {% endif %}
+{% endif %}

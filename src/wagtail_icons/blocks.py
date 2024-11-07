@@ -1,10 +1,5 @@
-from wagtail.snippets.blocks import SnippetChooserBlock
+from wagtail_icons.views import icon_chooser_viewset
 
-from wagtail_icons.models import Icon
-
-
-class IconChooserBlock(SnippetChooserBlock):
-    icon = "pick"
-
-    def __init__(self, **kwargs):
-        super().__init__(Icon, **kwargs)
+IconChooserBlock = icon_chooser_viewset.get_block_class(
+    name="IconChooserBlock", module_path="wagtail_icons.blocks"
+)

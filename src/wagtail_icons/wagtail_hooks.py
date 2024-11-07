@@ -2,7 +2,7 @@ import logging
 
 from wagtail import hooks
 
-from .views import icon_chooser_viewset
+from wagtail_icons.views import icon_chooser_viewset
 
 logger = logging.getLogger(__name__)
 

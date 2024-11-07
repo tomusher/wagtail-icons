@@ -54,9 +54,9 @@ class IconFilterSet(WagtailFilterSet):
 
 
 class IconSvgColumn(Column):
-    def __init__(self, **kwargs):
+    def __init__(self, field, **kwargs):
         super().__init__(
-            "svg",
+            field,
             label="SVG",
         )
 
@@ -74,7 +74,7 @@ class IconViewSet(SnippetViewSet):
     filterset_class = IconFilterSet
     list_display = [
         "name",
-        IconSvgColumn(),
+        IconSvgColumn("svg"),
         "provider",
         "style",
     ]
